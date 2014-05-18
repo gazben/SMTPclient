@@ -12,7 +12,7 @@ public:
 	SMTPclient();
 	void Init();
 
-	Email ReadEmailData();
+	bool ReadEmailData();
 
 	bool SendEmail(Email);
 
