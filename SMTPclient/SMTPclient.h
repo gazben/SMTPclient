@@ -2,6 +2,7 @@
 #define SMTPclient_h__
 
 #include "SFML/Network.hpp"
+#include "Email.h"
 
 class Email;
 
@@ -14,7 +15,7 @@ public:
 
 	bool ReadEmailData();
 
-	bool SendEmail(Email);
+	void SendEmail(Email);
 
 	bool SendAllEmail();
 

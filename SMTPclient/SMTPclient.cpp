@@ -2,7 +2,6 @@
 #include <regex>
 
 #include "SMTPclient.h"
-#include "Email.h"
 
 SMTPclient::SMTPclient()
 {
@@ -22,24 +21,40 @@ void SMTPclient::Init(){
 
 	while (!regex_match(_serverIP, ipRegex)){
 		cout << "Not valid IP!" << endl;
+
+		cout << "Pls give me the SMTP servers IPv4 adress: ";
+		cin >> _serverIP;
+		cout << endl;
 	}
 	cout << "Valid ip" << endl;
 	serverIp = _serverIP;
 
-	regex emailRegex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$");
+	while (socket.connect(_serverIP.c_str(), 3245) != sf::Socket::Status::Done)
+	{
+		std::cout << "Connection error" << std::endl;
 
-	cout << "PLease give me the email adress youwant to use";
+		sf::sleep(sf::milliseconds(300));
+	}
+
+
+	regex emailRegex(".+\@.+\..+");
+
+	cout << "PLease give me the email adress youwant to use: ";
 	cin >> _senderAddr;
 	cout << endl;
 
 	while (!regex_match(_senderAddr, emailRegex)){
 		cout << "Not valid adress!" << endl;
+
+		cout << "PLease give me the email adress youwant to use: ";
+		cin >> _senderAddr;
+		cout << endl;
 	}
 
 	cout << "Valid adress" << endl;
 	senderAddress = _senderAddr;
 
-	socket.connect(serverIp, 25);
+
 }
 
 bool SMTPclient::ReadEmailData(){
@@ -47,6 +62,10 @@ bool SMTPclient::ReadEmailData(){
 
 	string emailSubject;
 	string emailBody;
+	string reciverAddress;
+
+	cout << "Enter the recivers address: " << endl;
+	cin >> reciverAddress;
 
 	cout << "Enter the subject of the mail: " << endl;
 	cin >> emailSubject;
@@ -54,17 +73,18 @@ bool SMTPclient::ReadEmailData(){
 	cout << "Enter the body of the email: " << endl;
 	cin >> emailBody;
 
-	Email tempMail(emailSubject, emailBody, senderAddress);
+	Email tempMail(emailSubject, emailBody, senderAddress, reciverAddress);
 
-	cout << "Do you want to send the e-mail now? ";
+	cout << "Do you want to send the e-mail now? " << endl;
 	string answer;
+
 	cin >> answer;
 	cout << endl;
 	if (answer == "yes" || answer == "Yes" || answer == "y"){
 		SendEmail(tempMail);
 	}
-else
-	emails.push_back(tempMail);
+	else
+		emails.push_back(tempMail);
 
 	cout << "Do you want to send another e-mail now? ";
 	cin >> answer;
@@ -76,11 +96,11 @@ else
 		return false;
 }
 
-bool SMTPclient::SendEmail(Email mail){
+void SMTPclient::SendEmail(Email mail){
 	sf::Packet packet;
 
 	packet << mail;
-
+	
 	sf::Socket::Status status = socket.send(packet);
 
 	std::cout << "The sending ended with code: " << status << std::endl;
