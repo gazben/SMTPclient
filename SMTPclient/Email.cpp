@@ -36,3 +36,8 @@ Email::Email(std::string _emailSubject, std::string _emailBody, std::string _sen
 	emailBody = _emailBody;
 	senderAddress = _senderAddress;
 }
+
+sf::Packet& operator <<(sf::Packet& packet, const Email& email)
+{
+	return packet << email.getSenderAddress() << email.getEmailSubject() << email.getEmailBody();
+}

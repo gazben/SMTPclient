@@ -27,4 +27,7 @@ private:
 	std::string senderAddress;
 
 };
+
+sf::Packet& operator <<(sf::Packet& packet, const Email& email);
+
 #endif // Email_h__
