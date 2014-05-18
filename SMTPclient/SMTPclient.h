@@ -9,7 +9,8 @@ class SMTPclient{
 
 public:
 
-	SMTPclient(std::string _senderAddr , std::string _serverIP);
+	SMTPclient();
+	void Init();
 
 	Email ReadEmailData();
 
@@ -24,6 +25,8 @@ private:
 	std::string senderAddress;
 
 	std::vector<Email> emails;
+
+	sf::TcpSocket socket;
 
 };
 #endif // SMTPclient_h__
